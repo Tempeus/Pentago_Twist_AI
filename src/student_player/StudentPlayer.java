@@ -14,7 +14,7 @@ public class StudentPlayer extends PentagoPlayer {
      * associate you with your agent. The constructor should do nothing else.
      */
     public StudentPlayer() {
-        super("XXXXXXX");
+        super("260862327");
     }
 
     /**
@@ -27,10 +27,37 @@ public class StudentPlayer extends PentagoPlayer {
         // Is random the best you can do?
         System.out.println(boardState.getAllLegalMoves().size());
         System.out.println(Min_max.t_table.size());
-        Move myMove = Min_max.min_max_helper(boardState,1);
+        Move myMove;
+        PentagoBoardState pbs;
 
-        if (myMove == null){
-            myMove = Monte_Carlo.monte_carlo_helper(boardState,10000);
+        //Make a copy of the board for analysis
+        pbs = MyTools.getLayoutCurrentBoardState(boardState);
+        int playerId = pbs.getTurnPlayer();
+
+        //Default Depth
+        MyTools.DEPTH = 1;
+        //Change Depth depending if its LateGame or EndGame since there are less available moves left
+        if(MyTools.getCurrentGameRound(pbs) > MyTools.LATEGAME && MyTools.getCurrentGameRound(pbs) < MyTools.ENDGAME){ MyTools.DEPTH = 2; }
+        else { MyTools.DEPTH = 3; }
+
+        //EarlyGame
+        if(MyTools.getCurrentGameRound(pbs) < 3){
+            System.out.println("EarlyGame Moves");
+            myMove = MoveSelect.calcBestEarlyGameMove(playerId, pbs);
+        }
+
+        //White Move Attack Advantage
+        else if(playerId == 0 && MyTools.getCurrentGameRound(pbs) == 3){
+            System.out.println("White Advantage ATK");
+            myMove = MoveSelect.calcEarlyWhiteAtk(playerId, pbs);
+        }
+
+        //No longer EarlyGame
+        else{
+            myMove = Min_max.min_max_helper(boardState,MyTools.DEPTH);
+            if (myMove == null){
+                myMove = Monte_Carlo.monte_carlo_helper(boardState,10000);
+            }
         }
 
         // Return your move to be processed by the server.
