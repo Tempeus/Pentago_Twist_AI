@@ -1,0 +1,4 @@
+*.class
+.idea
+out/*
+Pentago_Twist_AI.iml
