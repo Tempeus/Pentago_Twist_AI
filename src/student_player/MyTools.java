@@ -8,6 +8,8 @@ public class MyTools {
     public static int DEPTH = 1;
     //Play around with these settings
     public static int ENDGAME = 12;
+    public static int LATEGAME = 9;
+    public static int MIDGAME = 5;
     public static int MONTE_CARLO_ITTERATION = 7500;
     public static int MAXTIME = 1985;
 

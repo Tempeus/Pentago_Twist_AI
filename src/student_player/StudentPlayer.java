@@ -25,6 +25,8 @@ public class StudentPlayer extends PentagoPlayer {
      * This is the primary method that you need to implement. The ``boardState``
      * object contains the current state of the game, which your agent must use to
      * make decisions.
+     *
+     * TODO: STEP 4 for BLACK exceeds
      */
     public Move chooseMove(PentagoBoardState boardState) {
         long startTime = System.currentTimeMillis();
@@ -42,7 +44,15 @@ public class StudentPlayer extends PentagoPlayer {
         //Default Depth
         MyTools.DEPTH = 1;
         //Change Depth depending if its LateGame or EndGame since there are less available moves left
-        if(MyTools.getCurrentGameRound(pbs) > MyTools.ENDGAME){
+        if(MyTools.getCurrentGameRound(pbs) > MyTools.MIDGAME && MyTools.getCurrentGameRound(pbs) < MyTools.LATEGAME){
+            System.out.println("ENTERING LATEGAME MODE");
+            MONTE_CARLO_ITTERATION = 20000;
+        }
+        else if(MyTools.getCurrentGameRound(pbs) > MyTools.LATEGAME && MyTools.getCurrentGameRound(pbs) < MyTools.ENDGAME){
+            System.out.println("ENTERING LATEGAME MODE");
+            MONTE_CARLO_ITTERATION = 30000;
+        }
+        else if(MyTools.getCurrentGameRound(pbs) > MyTools.ENDGAME){
             System.out.println("ENTERING ENDGAME MODE");
             MyTools.DEPTH = 2;
         }
@@ -107,3 +117,6 @@ public class StudentPlayer extends PentagoPlayer {
         }
     }
 }
+
+//check if player has three or more, else pick prime position
+//take the middle
