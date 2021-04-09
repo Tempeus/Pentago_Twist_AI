@@ -89,12 +89,12 @@ public class MoveSelect {
      * @param pbs       Board state
      * @return          Best move
      */
-    public static PentagoMove calcEarlyWhiteAtk(int playerID, PentagoBoardState pbs){
+    public static PentagoMove calcEarlyAttack(int playerID, PentagoBoardState pbs){
         //Find the best move piece that we placed in Early game
-        boolean q0 = (pbs.getPieceAt(1,1).compareTo(Piece.WHITE) == 0);
-        boolean q1 = (pbs.getPieceAt(4,1).compareTo(Piece.WHITE) == 0);
-        boolean q2 = (pbs.getPieceAt(4,4).compareTo(Piece.WHITE) == 0);
-        boolean q3 = (pbs.getPieceAt(1,4).compareTo(Piece.WHITE) == 0);
+        boolean q0 = (pbs.getPieceAt(1,1).compareTo(Piece.values()[1-playerID]) == 0);
+        boolean q1 = (pbs.getPieceAt(4,1).compareTo(Piece.values()[1-playerID]) == 0);
+        boolean q2 = (pbs.getPieceAt(4,4).compareTo(Piece.values()[1-playerID]) == 0);
+        boolean q3 = (pbs.getPieceAt(1,4).compareTo(Piece.values()[1-playerID]) == 0);
         ArrayList<int[]> availability = new ArrayList<>();
 
         //Check if the EarlyGame pieces are diagonal from each other

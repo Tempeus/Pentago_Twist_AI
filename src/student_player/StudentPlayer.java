@@ -88,10 +88,10 @@ public class StudentPlayer extends PentagoPlayer {
                     myMove = MoveSelect.calcBestEarlyGameMove(playerId, pbs_copy);
                 }
 
-                //White Move Attack Advantage
-                else if(playerId == 0 && MyTools.getCurrentGameRound(pbs_copy) == 3){
-                    System.out.println("White Advantage ATK");
-                    myMove = MoveSelect.calcEarlyWhiteAtk(playerId, pbs_copy);
+                //EarlyGame Attack
+                else if(MyTools.getCurrentGameRound(pbs_copy) == 3){
+                    System.out.println("EarlyGame ATK");
+                    myMove = MoveSelect.calcEarlyAttack(playerId, pbs_copy);
                 }
 
                 //No longer EarlyGame
