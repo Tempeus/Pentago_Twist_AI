@@ -5,9 +5,12 @@ import boardgame.Move;
 import pentago_twist.PentagoPlayer;
 import pentago_twist.PentagoBoardState;
 
+import static student_player.MyTools.MONTE_CARLO_ITTERATION;
+import static student_player.MyTools.MAXTIME;
+
 /** A player file submitted by a student. */
 public class StudentPlayer extends PentagoPlayer {
-    private int maxTime = 1970;
+    Move myMove;
 
     /**
      * You must modify this constructor to return your student number. This is
@@ -29,48 +32,78 @@ public class StudentPlayer extends PentagoPlayer {
         // Is random the best you can do?
         System.out.println(boardState.getAllLegalMoves().size());
         System.out.println(Min_max.t_table.size());
-        Move myMove;
         PentagoBoardState pbs;
 
         //Make a copy of the board for analysis
         pbs = MyTools.getLayoutCurrentBoardState(boardState);
         int playerId = pbs.getTurnPlayer();
+        System.out.println("I am: "+ playerId);
 
         //Default Depth
         MyTools.DEPTH = 1;
         //Change Depth depending if its LateGame or EndGame since there are less available moves left
-        if(MyTools.getCurrentGameRound(pbs) > MyTools.LATEGAME && MyTools.getCurrentGameRound(pbs) < MyTools.ENDGAME){
-            System.out.println("ENTERING LATEGAME MODE");
-            MyTools.DEPTH = 2;
-        }
-        else if(MyTools.getCurrentGameRound(pbs) > MyTools.ENDGAME){
+        if(MyTools.getCurrentGameRound(pbs) > MyTools.ENDGAME){
             System.out.println("ENTERING ENDGAME MODE");
-            MyTools.DEPTH = 3;
+            MyTools.DEPTH = 2;
         }
 
         System.out.println("GAME ROUND: " + MyTools.getCurrentGameRound(pbs));
+        myMove = boardState.getRandomMove();
 
-        //EarlyGame
-        if(MyTools.getCurrentGameRound(pbs) < 3){
-            System.out.println("EarlyGame Moves");
-            myMove = MoveSelect.calcBestEarlyGameMove(playerId, pbs);
+        DecisionMove dmove = new DecisionMove(pbs, boardState, playerId);
+        Thread t = new Thread(dmove);
+        t.start();
+        try{
+            t.join(MAXTIME);
+        } catch (InterruptedException e) {
+            t.interrupt();
         }
-
-        //White Move Attack Advantage
-        else if(playerId == 0 && MyTools.getCurrentGameRound(pbs) == 3){
-            System.out.println("White Advantage ATK");
-            myMove = MoveSelect.calcEarlyWhiteAtk(playerId, pbs);
+        if(t.isAlive()){
+            t.interrupt();
         }
-
-        //No longer EarlyGame
-        else{
-            myMove = Min_max.min_max_helper(boardState,MyTools.DEPTH);
-            if (myMove == null){
-                myMove = Monte_Carlo.monte_carlo_helper(boardState,10000);
-            }
-        }
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        System.out.println("Time Elapsed: " + (float) elapsedTime / 1000);
 
         // Return your move to be processed by the server.
         return myMove;
+    }
+
+    public class DecisionMove implements  Runnable {
+        PentagoBoardState pbs_copy;
+        PentagoBoardState boardState;
+        int playerId;
+
+        public DecisionMove(PentagoBoardState b, PentagoBoardState state, int p){
+            pbs_copy = b;
+            boardState = state;
+            playerId = p;
+        }
+
+        @Override
+        public void run(){
+            try{
+                //EarlyGame
+                if(MyTools.getCurrentGameRound(pbs_copy) < 3){
+                    System.out.println("EarlyGame Moves");
+                    myMove = MoveSelect.calcBestEarlyGameMove(playerId, pbs_copy);
+                }
+
+                //White Move Attack Advantage
+                else if(playerId == 0 && MyTools.getCurrentGameRound(pbs_copy) == 3){
+                    System.out.println("White Advantage ATK");
+                    myMove = MoveSelect.calcEarlyWhiteAtk(playerId, pbs_copy);
+                }
+
+                //No longer EarlyGame
+                else{
+                    myMove = Min_max.min_max_helper(boardState,MyTools.DEPTH);
+                    if (myMove == null){
+                        myMove = Monte_Carlo.monte_carlo_helper(boardState,MONTE_CARLO_ITTERATION);
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("TIMED OUT");
+            }
+        }
     }
 }

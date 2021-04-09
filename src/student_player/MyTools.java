@@ -6,9 +6,10 @@ import static pentago_twist.PentagoBoardState.BOARD_SIZE;
 
 public class MyTools {
     public static int DEPTH = 1;
-    //Play arround with these settings
-    public static int LATEGAME = 10;
-    public static int ENDGAME = 20;
+    //Play around with these settings
+    public static int ENDGAME = 12;
+    public static int MONTE_CARLO_ITTERATION = 7500;
+    public static int MAXTIME = 1985;
 
     public static double getSomething() {
         return Math.random();
