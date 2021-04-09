@@ -7,6 +7,7 @@ import pentago_twist.PentagoBoardState;
 
 /** A player file submitted by a student. */
 public class StudentPlayer extends PentagoPlayer {
+    private int maxTime = 1970;
 
     /**
      * You must modify this constructor to return your student number. This is
@@ -23,6 +24,7 @@ public class StudentPlayer extends PentagoPlayer {
      * make decisions.
      */
     public Move chooseMove(PentagoBoardState boardState) {
+        long startTime = System.currentTimeMillis();
 
         // Is random the best you can do?
         System.out.println(boardState.getAllLegalMoves().size());
@@ -37,8 +39,16 @@ public class StudentPlayer extends PentagoPlayer {
         //Default Depth
         MyTools.DEPTH = 1;
         //Change Depth depending if its LateGame or EndGame since there are less available moves left
-        if(MyTools.getCurrentGameRound(pbs) > MyTools.LATEGAME && MyTools.getCurrentGameRound(pbs) < MyTools.ENDGAME){ MyTools.DEPTH = 2; }
-        else { MyTools.DEPTH = 3; }
+        if(MyTools.getCurrentGameRound(pbs) > MyTools.LATEGAME && MyTools.getCurrentGameRound(pbs) < MyTools.ENDGAME){
+            System.out.println("ENTERING LATEGAME MODE");
+            MyTools.DEPTH = 2;
+        }
+        else if(MyTools.getCurrentGameRound(pbs) > MyTools.ENDGAME){
+            System.out.println("ENTERING ENDGAME MODE");
+            MyTools.DEPTH = 3;
+        }
+
+        System.out.println("GAME ROUND: " + MyTools.getCurrentGameRound(pbs));
 
         //EarlyGame
         if(MyTools.getCurrentGameRound(pbs) < 3){
