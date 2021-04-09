@@ -53,6 +53,12 @@ public class MoveSelect {
         ArrayList<int[]> availability = new ArrayList<>();
 
         //Attempt to get best diagonal setup (4,1) (1,4)
+        //TODO: FIX bug where it goes into the if statement when its not even true
+        System.out.println(q1.compareTo(Piece.EMPTY) == 0);
+        System.out.println(q1.compareTo(Piece.values()[1-playerID]) == 0);
+        System.out.println(q3.compareTo(Piece.EMPTY) == 0);
+        System.out.println(q3.compareTo(Piece.values()[1-playerID]) == 0);
+
         if((q1.compareTo(Piece.EMPTY) == 0 || q1.compareTo(Piece.values()[1-playerID]) == 0) && (q3.compareTo(Piece.EMPTY) == 0) || q3.compareTo(Piece.values()[1-playerID]) == 0){
             System.out.println("Attempting to Perform best Diagonal Setup");
             if(q1.compareTo(Piece.EMPTY) == 0){ availability.add(new int[] {4,1}); }
@@ -66,15 +72,24 @@ public class MoveSelect {
         }
         else {
             //Check to see if the best positions are already taken
-            if(q0.compareTo(Piece.EMPTY) == 0){ availability.add(new int[] {1,1}); }
-            if(q1.compareTo(Piece.EMPTY) == 0){ availability.add(new int[] {4,1}); }
-            if(q2.compareTo(Piece.EMPTY) == 0){ availability.add(new int[] {4,4}); }
-            if(q3.compareTo(Piece.EMPTY) == 0){ availability.add(new int[] {1,4}); }
+            CheckAllCenters(q0, q1, q2, q3, availability);
         }
 
+        //If the list is empty
+        if(availability.size() == 0){
+            //Check to see if the best positions are already taken
+            CheckAllCenters(q0, q1, q2, q3, availability);
+        }
 
         //Store the best positions in an arrayList to be picked
         return createValidMove(playerID, availability);
+    }
+
+    private static void CheckAllCenters(Piece q0, Piece q1, Piece q2, Piece q3, ArrayList<int[]> availability) {
+        if(q0.compareTo(Piece.EMPTY) == 0){ availability.add(new int[] {1,1}); }
+        if(q1.compareTo(Piece.EMPTY) == 0){ availability.add(new int[] {4,1}); }
+        if(q2.compareTo(Piece.EMPTY) == 0){ availability.add(new int[] {4,4}); }
+        if(q3.compareTo(Piece.EMPTY) == 0){ availability.add(new int[] {1,4}); }
     }
 
     /**
@@ -113,6 +128,7 @@ public class MoveSelect {
         else{
             //Find the available moves around our white pieces
             //We can efficiently separate the board into the given quadrants and search withing the quadrants that have our pieces
+            //TODO: Double check this isn't ruined by the messed up coordinate system (y,x)
             for(int i = 0; i < 3; i++){
                 for(int j = 0; j < 3; j++){
                     if (q0) { if (pbs.getPieceAt(i, j).compareTo(Piece.EMPTY) == 0){ availability.add(new int[]{i, j}); } }
@@ -122,7 +138,6 @@ public class MoveSelect {
                 }
             }
         }
-
         return createValidMove(playerID, availability);
     }
 

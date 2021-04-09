@@ -24,6 +24,11 @@ public class MyTools {
         return (PentagoBoardState) boardState.clone();
     }
 
+    /**
+     * This function is used to keep track of what round it is, this will allow the program to know when it is reaching EndGame
+     * @param pbs
+     * @return
+     */
     public static int getCurrentGameRound(PentagoBoardState pbs){
         int round = 0;
         for(int i = 0; i < BOARD_SIZE; i++){
@@ -34,11 +39,5 @@ public class MyTools {
             }
         }
         return round/2 + 1;
-    }
-
-
-    /* ENUMERATION FOR WINNING POSITIONS */
-    public enum WinningPositions{
-
     }
 }
