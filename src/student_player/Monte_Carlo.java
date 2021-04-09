@@ -50,10 +50,10 @@ public class Monte_Carlo {
                 max_val = child_score;
                 best_move = moves.get(i);
             }
-            System.out.print(" Move:" + moves.get(i).toString() + " Value: " + Float.toString(child_score));
+            //System.out.print(" Move:" + moves.get(i).toString() + " Value: " + Float.toString(child_score));
         }
-        System.out.println("");
-        System.out.println(max_val);
+        //System.out.println("");
+        //System.out.println(max_val);
 
         return best_move;
     }

@@ -27,7 +27,7 @@ public class MoveSelect {
         int qtwist = rand.nextInt(4);
         int choice = rand.nextInt(2);
 
-        System.out.println("Putting piece at: "+getRandomCoord[0]+", "+getRandomCoord[1]);
+        System.out.println("Putting piece at: " + getRandomCoord[0] + ", " + getRandomCoord[1]);
         return new PentagoMove(getRandomCoord[0], getRandomCoord[1], qtwist, choice, playerID);
     }
 
@@ -36,8 +36,9 @@ public class MoveSelect {
      *  The best positions are (1,1), (4,1), (1,4) , (4,4) because not only are they not affected by the twist, but they are great positions
      *  to adapt strong attacks that forces the opponent to go on the defense.
      *
-     *  | 0 1 |
-     *  | 2 3 |
+     *  | 0 | 1 |
+     *  ---------
+     *  | 2 | 3 |
      *
      *  We will prioritize the quadrant 1 and quadrant 3.
      * @param playerID  Turn Number

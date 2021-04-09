@@ -1,4 +1,4 @@
-package student_player;
+package pentago_twist;
 
 import boardgame.Board;
 import pentago_twist.PentagoBoardState;
@@ -28,7 +28,6 @@ public class Min_max {
         }
 
         float max_val = Collections.max(scores);
-        System.out.println(scores.toString());
 
         List<PentagoMove> candidate_moves = new ArrayList<>();
 
@@ -50,6 +49,10 @@ public class Min_max {
     public static float min_max(int depth, boolean isMax, PentagoBoardState game, int tkn, float alpha, float beta) {
         long hashed_game = game_hash(game);
         float position_score = 0;
+//        if(t_table.containsKey(hashed_game)){
+////            System.out.println("Found match");
+//            return t_table.get(hashed_game)*tkn;
+//        }
 
         if ((game.getWinner() != Board.NOBODY)) {
             int winner = game.getWinner();
