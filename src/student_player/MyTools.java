@@ -45,12 +45,12 @@ public class MyTools {
 
 	public static class State{
 		//declare the variables, for example towthree means two pieces with same colour plus three empty pieces
-		double twothree =0;
-		double twofour =0;
-		double threetwo=0;
-		double threethree=0;
-		double fourone=0;
-		double fourtwo=0;
+		double twothree = 0;
+		double twofour = 0;
+		double threetwo = 0;
+		double threethree = 0;
+		double fourone = 0;
+		double fourtwo = 0;
 		//getNum function
 		public double[] getNum(){
 			double[] result = { twothree,twofour, threetwo, threethree, fourone, fourtwo};
@@ -60,26 +60,26 @@ public class MyTools {
 		public void increase(int input, int avail, double value){
 			if(input == 2){
 				if(avail == 3){
-					twothree+=value;
+					twothree += value;
 				}
 				else if(avail == 4){
-					twofour+=value;
+					twofour += value;
 				}
 			}
 			else if(input == 3){
 				if(avail == 2){
-					threetwo+=value;
+					threetwo += value;
 				}
 				else if(avail == 3){
-					threethree+=value;
+					threethree += value;
 				}
 			}
 			else if(input == 4){
 				if(avail == 2){
-					fourtwo+=value;
+					fourtwo += value;
 				}
 				else if(avail == 1){
-					fourone+=value;
+					fourone += value;
 				}
 			}
 			else{
