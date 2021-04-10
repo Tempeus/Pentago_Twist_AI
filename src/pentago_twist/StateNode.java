@@ -1,4 +1,4 @@
-package student_player;
+package pentago_twist;
 
 import boardgame.Board;
 import boardgame.BoardState;

@@ -1,7 +1,7 @@
 package pentago_twist;
 
 import boardgame.Move;
-import student_player.Monte_Carlo;
+import pentago_twist.Monte_Carlo;
 
 /**
  * @author mgrenander
@@ -27,7 +27,7 @@ public class RandomPentagoPlayer extends PentagoPlayer {
                 myMove = Min_max.min_max_helper(boardState,1);
 
                 if (myMove == null){
-                    myMove = Monte_Carlo.monte_carlo_helper(boardState,5000);
+                    myMove = Monte_Carlo.monte_carlo_helper(boardState,10000);
                 }
 
             case 2:

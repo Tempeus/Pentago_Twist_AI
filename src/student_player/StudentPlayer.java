@@ -9,6 +9,7 @@ import pentago_twist.PentagoBoardState;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.concurrent.*;
 
 import static student_player.MyTools.MONTE_CARLO_ITTERATION;
 import static student_player.MyTools.MAXTIME;
@@ -76,7 +77,6 @@ public class StudentPlayer extends PentagoPlayer {
 
     public MoveValue MiniMax(int depth, int maxDepth, double alpha, double beta, PentagoBoardState boardState) {
 
-        System.out.println("Doing MINIMAX");
         if (depth == maxDepth) return new MoveValue(evaluateFunction(boardState), null);
 
         ArrayList<PentagoMove> moveoptions = boardState.getAllLegalMoves();
@@ -159,7 +159,6 @@ public class StudentPlayer extends PentagoPlayer {
     public Move chooseMove(PentagoBoardState boardState) {
         long startTime = System.currentTimeMillis();
 
-
         // Is random the best you can do?
         PentagoBoardState pbs;
 
@@ -170,17 +169,14 @@ public class StudentPlayer extends PentagoPlayer {
         System.out.println("I am: " + playerId);
 
         //Default Depth
-        MyTools.DEPTH = 1;
+        MyTools.DEPTH = 2;
         //Change Depth depending if its LateGame or EndGame since there are less available moves left
-        if (currentGameRound > MyTools.MIDGAME && currentGameRound < MyTools.LATEGAME) {
+        if (currentGameRound > MyTools.LATEGAME && currentGameRound < MyTools.ENDGAME) {
             System.out.println("ENTERING LATEGAME MODE");
-            MONTE_CARLO_ITTERATION = 20000;
-        } else if (currentGameRound > MyTools.LATEGAME && currentGameRound < MyTools.ENDGAME) {
-            System.out.println("ENTERING LATEGAME MODE");
-            MONTE_CARLO_ITTERATION = 30000;
-        } else if (currentGameRound> MyTools.ENDGAME) {
+            MyTools.DEPTH = 3;
+        } else if (currentGameRound > MyTools.ENDGAME) {
             System.out.println("ENTERING ENDGAME MODE");
-            MyTools.DEPTH = 2;
+            MyTools.DEPTH = 4;
         }
 
         System.out.println("GAME ROUND: " + currentGameRound);
@@ -197,17 +193,50 @@ public class StudentPlayer extends PentagoPlayer {
             System.out.println("EarlyGame ATK");
             myMove = MoveSelect.calcEarlyAttack(playerId, pbs);
         } else {
-            DecisionMove dmove = new DecisionMove(pbs, boardState, playerId);
-            Thread t = new Thread(dmove);
-            t.start();
+            Callable<Object> MoveDecision = new Callable<Object> () {
+
+                @Override
+                public Object call() throws Exception {
+                    MoveValue optimal;
+                    int depth = MyTools.DEPTH;
+                    while(!Thread.currentThread().isInterrupted()){
+                        optimal = MiniMax(0, MyTools.DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, boardState);
+                        if(depth == 2){
+                            moveset.add(optimal);
+                            moveset.add(optimal);
+                        }
+                        else{
+                            moveset.set(1, moveset.get(0));
+                            moveset.set(0, optimal);
+                        }
+                        depth++;
+                    }
+                    return null;
+                }
+            };
+
+            ExecutorService ex = Executors.newSingleThreadExecutor();
+
+            final Future<Object> futureEvent = ex.submit(MoveDecision);
             try {
-                t.join(MAXTIME);
-            } catch (InterruptedException e) {
-                myMove = moveset.get(0).move;
+                futureEvent.get(MAXTIME, TimeUnit.MILLISECONDS);
             }
-            if (t.isAlive()) {
-                myMove = moveset.get(0).move;
+            catch (TimeoutException e) {
+                //this is when time out
+                if (moveset.size() > 0) {
+                    myMove = moveset.get(0).move;
+                    System.out.println("Value of the final move: " + moveset.get(0).value);
+                }
             }
+            catch (InterruptedException | ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            finally {
+                ex.shutdownNow();
+            }
+            myMove = moveset.get(0).move;
+
         }
 
         long elapsedTime = System.currentTimeMillis() - startTime;
@@ -215,41 +244,6 @@ public class StudentPlayer extends PentagoPlayer {
 
         // Return your move to be processed by the server.
         return myMove;
-    }
-
-    public class DecisionMove implements Runnable {
-        PentagoBoardState pbs_copy;
-        PentagoBoardState boardState;
-        int playerId;
-
-        public DecisionMove(PentagoBoardState b, PentagoBoardState state, int p) {
-            pbs_copy = b;
-            boardState = state;
-            playerId = p;
-        }
-
-        @Override
-        public void run() {
-            try {
-                MoveValue optimal;
-                int depth = MyTools.DEPTH;
-                //No longer EarlyGame
-                optimal = MiniMax(0, MyTools.DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, boardState);
-                //make two copies
-                if(depth == 2){
-                    moveset.add(optimal);
-                    moveset.add(optimal);
-                }
-                else{
-                    moveset.set(1, moveset.get(0));
-                    moveset.set(0, optimal);
-                }
-                depth++;
-
-            } catch (Exception e) {
-                System.out.println("TIMED OUT");
-            }
-        }
     }
 }
 
