@@ -21,6 +21,7 @@ public class StudentPlayer extends PentagoPlayer {
     Move myMove;
     LinkedList<MoveValue> moveset = new LinkedList<MoveValue>();
 
+
     /**
      * You must modify this constructor to return your student number. This is
      * important, because this is what the code that runs the competition uses to
@@ -180,6 +181,7 @@ public class StudentPlayer extends PentagoPlayer {
     public Move chooseMove(PentagoBoardState boardState) {
         long startTime = System.currentTimeMillis();
 
+
         // Is random the best you can do?
         PentagoBoardState pbs;
 
@@ -256,8 +258,9 @@ public class StudentPlayer extends PentagoPlayer {
             finally {
                 ex.shutdownNow();
             }
-            myMove = moveset.get(0).move;
-
+            if(myMove == null){
+                myMove = moveset.get(0).move;
+            }
         }
 
         long elapsedTime = System.currentTimeMillis() - startTime;

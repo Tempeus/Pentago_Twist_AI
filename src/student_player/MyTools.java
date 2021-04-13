@@ -93,8 +93,7 @@ public class MyTools {
         }
     }
 
-    /*checkState function that take the input as currentBoard and player output the 2D double array which contatins
-     * 2 arrays for both black board and white board score*/
+    /*checkState function that take the input as currentBoard and player output the 2D double array */
     public static double[][] checkState(PentagoBoardState currentBoard) {
         State whiteState = new State();
         State blackState = new State();
