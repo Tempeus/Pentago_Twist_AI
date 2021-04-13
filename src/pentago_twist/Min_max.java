@@ -1,4 +1,4 @@
-package student_player;
+package pentago_twist;
 
 import boardgame.Board;
 import pentago_twist.PentagoBoardState;
@@ -28,7 +28,6 @@ public class Min_max {
         }
 
         float max_val = Collections.max(scores);
-        System.out.println(scores.toString());
 
         List<PentagoMove> candidate_moves = new ArrayList<>();
 
