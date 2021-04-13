@@ -17,7 +17,7 @@ public class RandomPentagoPlayer extends PentagoPlayer {
 
     @Override
     public Move chooseMove(PentagoBoardState boardState) {
-        int option = 2;
+        int option = 1;
         Move myMove;
 
         switch(option){
